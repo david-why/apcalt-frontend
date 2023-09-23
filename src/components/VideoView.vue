@@ -37,10 +37,10 @@ export default {
 </script>
 
 <template>
-  <p v-if="this.resource === null">Loading, please wait...</p>
+  <p v-if="resource === null">Loading, please wait...</p>
   <div v-else>
     <iframe
-      :src="'//fast.wistia.net/embed/iframe/' + this.resource.url"
+      :src="'//fast.wistia.net/embed/iframe/' + resource.url"
       allow="fullscreen"
       allowfullscreen
       mozallowfullscreen
