@@ -3,6 +3,7 @@ import { router } from '../router'
 import { notify } from '../util/notification'
 import service from '../util/request'
 import { useGlobalStore } from '../util/storage'
+import strftime from '../util/strftime'
 import FloppyDisk from './icons/FloppyDisk.vue'
 import FolderUpload from './icons/FolderUpload.vue'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
@@ -19,6 +20,11 @@ export default {
       review: this.$route.params.review === 'review',
       autosave: null,
       data: null,
+      timed: null,
+      endTime: null,
+      secondsLeft: null,
+      timedTimer: null,
+      countdownTimer: null,
       report: null,
       answers: null,
       responses: null,
@@ -32,7 +38,19 @@ export default {
       )
     },
     dirty() {
+      console.log('dirty?', Object.keys(this.modified).length)
       return Object.keys(this.modified).length !== 0
+    },
+    timeLeft() {
+      return new Date(this.secondsLeft * 1000)
+      // return new Date(
+      //   1970,
+      //   0,
+      //   1,
+      //   Math.floor(this.secondsLeft / 3600),
+      //   Math.floor(this.secondsLeft / 60),
+      //   this.secondsLeft % 60
+      // )
     }
   },
   methods: {
@@ -103,6 +121,27 @@ export default {
         await this.dosubmit()
       }
     },
+    async updateTimed() {
+      this.timed = (await service.get(this.baseUrl + '/timed')).data
+      if (this.timed.totalTime !== null) {
+        this.endTime = Date.now() / 1000 + this.timed.totalTime - this.timed.timeElapsed
+        console.log('end time : ', this.endTime)
+        if (this.timedTimer === null) {
+          this.timedTimer = setInterval(this.updateTimed, 30000)
+        }
+        if (this.countdownTimer === null) {
+          this.countdownTimer = setInterval(() => {
+            this.secondsLeft = Math.floor(this.endTime - Date.now() / 1000)
+            if (this.secondsLeft <= 0) {
+              alert('The allotted time for this assignment has passed.')
+              router.push({ path: '/subjects/' + this.subjectId })
+            }
+            // const endTime = this.endTime
+            // this.endTime = endTime
+          }, 1000)
+        }
+      }
+    },
     getResponse(responseId) {
       if (this.modified[responseId] !== null && this.modified[responseId] !== undefined) {
         return this.modified[responseId]
@@ -122,19 +161,27 @@ export default {
     }
   },
   async mounted() {
+    window.addEventListener('beforeunload', this.beforeWindowUnload)
     this.data = (await service.get(this.baseUrl)).data
     if (this.review) {
       this.report = (await service.get(this.baseUrl + '/report')).data
       this.answers = (await service.get(this.baseUrl + '/answers')).data
+    } else {
+      this.updateTimed()
     }
     this.responses = (await service.get(this.baseUrl + '/responses')).data
     console.log(this.responses)
-    window.addEventListener('beforeunload', this.beforeWindowUnload)
   },
-  beforeUnmount() {
+  unmounted() {
     window.removeEventListener('beforeunload', this.beforeWindowUnload)
     if (this.autosave !== null) {
       clearTimeout(this.autosave)
+    }
+    if (this.timedTimer !== null) {
+      clearTimeout(this.timedTimer)
+    }
+    if (this.countdownTimer !== null) {
+      clearTimeout(this.countdownTimer)
     }
   },
   beforeRouteLeave() {
@@ -174,7 +221,7 @@ export default {
           <p v-html="question.stimulus"></p>
           <div v-if="question.type === 'mcq'">
             <ol class="options">
-              <li v-for="option in question.options" :key="option.value">
+              <li v-for="(option, optindex) in question.options" :key="option.value" :class="review && answers[question.responseId].includes(option.value) ? 'correct' : ''">
                 <input
                   class="optionsel"
                   :name="question.responseId"
@@ -184,12 +231,10 @@ export default {
                   :checked="containsOption(question.responseId, option.value)"
                   :disabled="review"
                 />
-                <div
-                  :class="
-                    review && answers[question.responseId].includes(option.value) ? 'correct' : ''
-                  "
-                  v-html="option.label"
-                ></div>
+                <div v-html="option.label"></div>
+<template v-if="review"><br/><div>
+<details><summary>Explanation</summary><p v-html="question.metadata.distractor_rationale_response_level[optindex]"></p></details>
+</div></template>
               </li>
             </ol>
           </div>
@@ -224,6 +269,7 @@ export default {
       </li>
     </ol>
     <div class="float" v-if="!review">
+      <span v-if="secondsLeft !== null" v-text="strftime('%M:%S', timeLeft)"></span>
       <FloppyDisk class="button" size="36" @click="save"></FloppyDisk>
       <FolderUpload class="button" size="36" @click="submit"></FolderUpload>
     </div>

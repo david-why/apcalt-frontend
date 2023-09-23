@@ -100,7 +100,10 @@ export default {
           ></time>
           <span v-else>-</span>
         </td>
-        <td class="actions" v-if="assignment.progress !== null">
+        <td
+          class="actions"
+          v-if="assignment.type === 'teacher-authored' || assignment.type === 'ppc'"
+        >
           <RouterLink
             v-if="assignment.progress.started"
             :to="'/subjects/' + subject.id + '/assignments/' + assignment.id"
@@ -124,6 +127,11 @@ export default {
           >
             Review
           </RouterLink>
+        </td>
+        <td class="actions" v-else-if="assignment.type === 'video'">
+          <RouterLink :to="'/subjects/' + subject.id + '/videos/' + assignment.resource_id"
+            >Watch</RouterLink
+          >
         </td>
         <td v-else></td>
       </tr>

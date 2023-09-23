@@ -79,8 +79,8 @@ header input {
   width: 300px;
 }
 .notification {
-  padding: .5em;
-  margin-bottom: .5em;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
   border: 2px solid green;
   background-color: #dfd;
 }

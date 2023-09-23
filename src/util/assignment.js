@@ -1,5 +1,11 @@
 export function getProgress(assignment) {
-  if (!assignment || !assignment.progress) {
+  if (!assignment) {
+    return 'Unknown'
+  }
+  if (assignment.type === 'video') {
+    return assignment.status
+  }
+  if (!assignment.progress) {
     return 'Unknown'
   }
   const progress = assignment.progress

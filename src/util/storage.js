@@ -4,6 +4,7 @@ import service from './request'
 export const useGlobalStore = defineStore('global', {
   state: () => ({
     token: localStorage.getItem('token'),
+    courseOutlines: {},
     me: null,
     subjects: null
   }),
@@ -38,6 +39,36 @@ export const useGlobalStore = defineStore('global', {
         this.subjects = (await service.get('/subjects')).data
       }
       return this.subjects
+    },
+    async getCourseOutline(id) {
+      if (!this.hasToken()) {
+        return null
+      }
+      if (this.courseOutlines[id] === undefined) {
+        this.courseOutlines[id] = (await service.get('/subjects/' + id + '/courseOutline')).data
+      }
+      return this.courseOutlines[id]
+    },
+    getResource(subjectId, resourceId) {
+      const courseOutline = this.courseOutlines[subjectId]
+      if (courseOutline === undefined) {
+        return null
+      }
+      for (const unit of courseOutline.units) {
+        for (const resource of unit.resources) {
+          if (resource.resourceId === resourceId) {
+            return resource
+          }
+        }
+        for (const subunit of unit.subunits) {
+          for (const resource of subunit.resources) {
+            if (resource.resourceId === resourceId) {
+              return resource
+            }
+          }
+        }
+      }
+      return null
     }
   }
 })

@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "vite build",
+    "build": "vite build --mode prod",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "dev": "vite --host 0.0.0.0",
+    "dev": "vite --host 0.0.0.0 --mode dev",
+    "local": "vite --host 0.0.0.0 --mode lcal --port 5173",
     "format": "prettier --write src/",
     "preview": "vite preview"
   },
