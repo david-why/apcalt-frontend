@@ -238,13 +238,24 @@ export default {
                   :disabled="review"
                 />
                 <div v-html="option.label"></div>
-                <template v-if="review">
+                <template
+                  v-if="
+                    review &&
+                    (question.metadata.custom_distractor_rationale_response_level ||
+                      question.metadata.distractor_rationale_response_level) &&
+                    (question.metadata.custom_distractor_rationale_response_level ||
+                      question.metadata.distractor_rationale_response_level)[optindex]
+                  "
+                >
                   <br />
                   <div>
                     <details>
                       <summary>Explanation</summary>
                       <p
-                        v-html="question.metadata.distractor_rationale_response_level[optindex]"
+                        v-html="
+                          (question.metadata.custom_distractor_rationale_response_level ||
+                            question.metadata.distractor_rationale_response_level)[optindex]
+                        "
                       ></p>
                     </details>
                   </div>
@@ -366,7 +377,7 @@ li :deep(p) {
   display: block;
   font-size: smaller;
 }
-.apctext :deep(.standalone_image)>img {
+.apctext :deep(.standalone_image) > img {
   max-width: 65%;
   max-height: 65vh;
   margin: 0 auto 0 0;
