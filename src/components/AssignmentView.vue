@@ -215,13 +215,19 @@ export default {
                 data.items[index - 1].questions[0].sharedPassage !== question.sharedPassage)
             "
           >
-            <p v-html="question.sharedPassage"></p>
+            <p class="apctext" v-html="question.sharedPassage"></p>
             <p>&nbsp;</p>
           </div>
-          <p v-html="question.stimulus"></p>
+          <p class="apctext" v-html="question.stimulus"></p>
           <div v-if="question.type === 'mcq'">
             <ol class="options">
-              <li v-for="(option, optindex) in question.options" :key="option.value" :class="review && answers[question.responseId].includes(option.value) ? 'correct' : ''">
+              <li
+                v-for="(option, optindex) in question.options"
+                :key="option.value"
+                :class="
+                  review && answers[question.responseId].includes(option.value) ? 'correct' : ''
+                "
+              >
                 <input
                   class="optionsel"
                   :name="question.responseId"
@@ -232,9 +238,17 @@ export default {
                   :disabled="review"
                 />
                 <div v-html="option.label"></div>
-<template v-if="review"><br/><div>
-<details><summary>Explanation</summary><p v-html="question.metadata.distractor_rationale_response_level[optindex]"></p></details>
-</div></template>
+                <template v-if="review">
+                  <br />
+                  <div>
+                    <details>
+                      <summary>Explanation</summary>
+                      <p
+                        v-html="question.metadata.distractor_rationale_response_level[optindex]"
+                      ></p>
+                    </details>
+                  </div>
+                </template>
               </li>
             </ol>
           </div>
@@ -320,32 +334,47 @@ li :deep(p) {
   background-color: #555;
   margin: 0.5em;
 }
-</style>
-
-<style>
-.footnote_mark {
+.apctext :deep(.footnote_mark) {
   display: none;
 }
-.footnote_text {
+.apctext :deep(.footnote_text) {
   font-style: italic;
   text-decoration: underline;
 }
-.footnote_text::before {
+.apctext :deep(.footnote_text::before) {
   content: ' (';
 }
-.footnote_text::after {
+.apctext :deep(.footnote_text::after) {
   content: ') ';
 }
-.mandatory_credit_block {
+.apctext :deep(.mandatory_credit_block) {
   font-style: italic;
 }
-.font_style\:italic {
+.apctext :deep(.font_style\:italic) {
   font-style: italic;
 }
-.passage-intro {
+.apctext :deep(.text_decoration\:underline) {
+  text-decoration: underline;
+}
+.apctext :deep(.passage-intro) {
   font-weight: bold;
 }
-.ck-content {
+.frqeditor :deep(.ck-content) {
   height: 250px;
+}
+.apctext :deep(.mandatory_credit_line) {
+  display: block;
+  font-size: smaller;
+}
+.apctext :deep(.standalone_image)>img {
+  max-width: 65%;
+  max-height: 65vh;
+  margin: 0 auto 0 0;
+  object-position: left top;
+  object-fit: contain;
+  -o-object-fit: contain;
+}
+.apctext :deep(.title_line) {
+  font-weight: bold;
 }
 </style>
