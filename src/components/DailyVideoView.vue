@@ -1,10 +1,6 @@
-<script setup>
-import { notify } from '../util/notification'
-import service from '../util/request'
-import { useGlobalStore } from '../util/storage'
-</script>
-
 <script>
+import { useGlobalStore } from '../util/storage'
+
 export default {
   data() {
     return {
@@ -15,26 +11,13 @@ export default {
       resource: null
     }
   },
-  props: {
-    showFinishButton: { type: Boolean, required: false }
-  },
-  methods: {
-    async markDone() {
-      await service.post(
-        '/subjects/' +
-          this.subjectId +
-          '/videos/' +
-          this.resource.url +
-          ':' +
-          this.resource.videoId +
-          '/finish'
-      )
-      notify('Marked video as finished')
-    }
-  },
   async mounted() {
+    try {
     this.courseOutline = await this.store.getCourseOutline(this.subjectId)
     this.resource = this.store.getResource(this.subjectId, this.resourceId)
+    }catch(e){
+      alert(e)
+    }
   }
 }
 </script>
@@ -42,6 +25,7 @@ export default {
 <template>
   <p v-if="resource === null">Loading, please wait...</p>
   <div v-else>
+    <h1 v-text="resource.displayName"></h1>
     <iframe
       :src="'//fast.wistia.net/embed/iframe/' + resource.url"
       allow="fullscreen"
@@ -51,7 +35,6 @@ export default {
       oallowfullscreen
       msallowfullscreen
     ></iframe>
-    <div v-if="showFinishButton"><button @click="markDone">Mark as finished</button></div>
   </div>
 </template>
 

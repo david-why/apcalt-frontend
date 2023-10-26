@@ -197,16 +197,13 @@ export default {
   <p v-if="data === null || responses === null">Loading, please wait...</p>
   <div v-else>
     <h1>{{ data.title }}<span v-if="review"> (review)</span></h1>
-    <!-- &nbsp;<FloppyDisk class="button" @click="save"></FloppyDisk> -->
     <div v-if="!review">
       <button @click="save">Save</button>
       <button @click="submit">Submit</button>
     </div>
     <hr />
-    <!-- <textarea rows="30" cols="30" v-text="data"></textarea> -->
     <ol id="items">
       <li class="item" v-for="(item, index) in data.items" :key="item.reference">
-        <!-- <span v-if="review" v-text="getReportItem(item)" class="reportinfo"></span> -->
         <div class="question" v-for="question in item.questions" :key="question.responseId">
           <div
             v-if="
@@ -264,14 +261,6 @@ export default {
             </ol>
           </div>
           <div v-else-if="question.type === 'longtextV2'">
-            <!-- <textarea
-              cols="80"
-              rows="15"
-              :name="question.responseId"
-              @change="setResponse($event.target.value, question)"
-              v-text="getResponse(question.responseId) || ''"
-              :readonly="review"
-            ></textarea> -->
             <Ckeditor
               class="frqeditor"
               :name="question.responseId"
@@ -311,9 +300,6 @@ export default {
 .optionsel {
   vertical-align: middle;
   margin-right: 1em;
-}
-.reportinfo {
-  color: red;
 }
 .item,
 .question {
