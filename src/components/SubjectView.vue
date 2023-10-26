@@ -69,6 +69,9 @@ export default {
       </select>
     </div>
     <!-- <h1 v-text="subject.name"></h1> -->
+    <RouterLink :to="{ path: '/subjects/' + $route.params.id + '/outline' }"
+      >Click to see course outline (daily videos, etc.)</RouterLink
+    >
     <div>
       <label for="assignmentStatus"><b>Status</b></label>
       &nbsp;
