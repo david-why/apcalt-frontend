@@ -1,3 +1,6 @@
+.git.bak/
+.env.dev
+
 # Logs
 logs
 *.log

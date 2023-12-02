@@ -54,10 +54,14 @@
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+html {
   margin: 0;
 }
 
 body {
+  margin: 0;
   min-height: 100vh;
   color: var(--color-text);
   background: var(--color-background);
@@ -78,12 +82,16 @@ body {
     'Droid Sans',
     'Helvetica Neue',
     sans-serif;
-  font-size: 15px;
+  /* font-size: 15px; */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-hr {
-  margin: 0.5rem;
+blockquote {
+  font-style: italic;
+  padding: 1.5em;
+  background-color: #dda4;
+  border-radius: 2em;
+  border: 1px solid var(--color-border);
 }

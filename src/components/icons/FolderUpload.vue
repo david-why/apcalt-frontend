@@ -1,7 +1,5 @@
-<script>
-export default {
-  props: ['size']
-}
+<script setup lang="ts">
+defineProps({ size: { type: Number, required: true } })
 </script>
 
 <template>

@@ -1,12 +1,37 @@
 @import './base.css';
 
 #app {
-  display: grid;
-  grid-template-areas: 'sidebar content';
-  grid-template-rows: 1fr;
-  grid-template-columns: 300px 1fr;
+  /* max-width: 1280px; */
+  margin: 0 auto;
+  /* padding: 2rem; */
+
+  font-weight: normal;
 }
 
-body {
-  padding: 2rem;
+table {
+  margin: auto;
+}
+
+table td {
+  padding: 0 0.5em;
+}
+
+a.router-link-active {
+  color: inherit;
+  font-weight: bold;
+  /* text-decoration: none; */
+  /* cursor: default; */
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
 }

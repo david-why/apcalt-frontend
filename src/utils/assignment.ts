@@ -1,4 +1,6 @@
-export function getProgress(assignment) {
+import type { Assignment } from '@/types'
+
+export function getProgress(assignment?: Assignment) {
   if (!assignment) {
     return 'Unknown'
   }
@@ -15,7 +17,8 @@ export function getProgress(assignment) {
     assignment.score !== null &&
     assignment.max_score !== undefined &&
     assignment.max_score !== null &&
-    !progress.scoring
+    !progress.scoring &&
+    assignment.display_results
   ) {
     suffix += ' (' + assignment.score + '/' + assignment.max_score + ')'
   }

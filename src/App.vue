@@ -1,81 +1,73 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import { router } from './router'
-import { notifications } from './util/notification'
-import { useGlobalStore } from './util/storage'
-const store = useGlobalStore()
-if (!store.hasToken()) {
-  router.push({ path: '/login' })
-}
-</script>
+<script setup lang="ts">
+import MainNavigation from '@/views/MainNavigation.vue'
+import { onMounted, onUnmounted, ref } from 'vue'
+import { getSubjects } from './service'
+import { useLocalStore, useNotificationStore } from './stores'
+import router from './router';
+const notifyStore = useNotificationStore()
+const store = useLocalStore()
 
-<script>
-export default {
-  data() {
-    return {
-      store: useGlobalStore(),
-      command: ''
-    }
-  },
-  computed: {
-    hasToken() {
-      return this.store.hasToken()
-    }
-  },
-  methods: {
-    logout() {
-      this.store.logout()
-      router.push({ path: '/login' })
-    }
+const nav = ref()
+
+function onKeyDown(event: KeyboardEvent) {
+  if (event.target !== document.body) {
+    return
+  }
+  let caught = true
+  if (event.key === '/') {
+    nav.value.focusSearch()
+    nav.value.setSearchValue('/')
+  } else if (event.key in store.commands) {
+    nav.value.focusSearch()
+    nav.value.setSearchValue('/' + event.key)
+  } else if (event.key === 'k') {
+    nav.value.focusSearch()
+  } else if (event.key === 'z') {
+    router.back()
+  } else {
+    caught = false
+  }
+  if (caught) {
+    event.preventDefault()
+    event.stopPropagation()
   }
 }
+
+onMounted(() => {
+  getSubjects()
+  document.addEventListener('keydown', onKeyDown, true)
+})
+onUnmounted(() => {
+  document.removeEventListener('keydown', onKeyDown, true)
+})
 </script>
 
 <template>
-  <!-- <header>
-    <input v-model="command" placeholder="Command..." id="CommandInput" />
-  </header> -->
-  <aside>
-    <h2>APCAlt</h2>
-    <ul>
-      <li><RouterLink to="/">Home</RouterLink></li>
-      <li v-if="!hasToken"><RouterLink to="/login">Login</RouterLink></li>
-      <li v-if="hasToken"><a href="javascript:;" @click="logout">Logout</a></li>
-    </ul>
-  </aside>
-  <main>
-    <RouterView :key="$route.path"></RouterView>
-  </main>
+  <MainNavigation class="main-nav" ref="nav"></MainNavigation>
+  <div class="main-content"><RouterView :key="$route.fullPath"></RouterView></div>
   <div class="notifications">
     <div
       class="notification"
-      v-for="notification in notifications"
+      v-for="notification in notifyStore.notifications"
       :key="notification.id"
-      v-html="notification.content"
+      v-html="notification.html"
     ></div>
   </div>
 </template>
 
 <style scoped>
-header {
-  grid-area: command-bar;
+.main-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10000;
 }
-aside {
-  grid-area: sidebar;
-  font-size: 1em;
-}
-main {
-  grid-area: content;
-}
-header input {
-  text-align: center;
-  width: 100%;
-  height: 100%;
+.main-content {
+  margin: 0 1em;
 }
 .notifications {
   position: fixed;
-  right: 1.5rem;
-  top: 1.5rem;
+  right: 30px;
+  top: 60px;
   width: 300px;
 }
 .notification {
