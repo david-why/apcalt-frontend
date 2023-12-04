@@ -42,7 +42,7 @@ export async function login(
   }
   store.loggingIn = true
   store.token = undefined
-  const url = isBackground ? '/auth/login' : '/auth/login?background'
+  const url = isBackground ? '/auth/login?background' : '/auth/login'
   try {
     const response = await service.post(url, { username, password })
     store.token = response.data
