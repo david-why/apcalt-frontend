@@ -137,7 +137,7 @@ defineExpose({ sortedAssignments, actions })
             "
           >
             <RouterLink
-              v-if="assignment.progress.started"
+              v-if="assignment.progress.started && assignment.status === 'opened'"
               :to="{
                 name: 'assignment',
                 params: { subjectId: assignment.subject.id, id: assignment.id }
@@ -147,7 +147,7 @@ defineExpose({ sortedAssignments, actions })
             <a
               href="javascript:;"
               @click="doStartAssignment(assignment)"
-              v-if="assignment.progress.not_started"
+              v-if="assignment.progress.not_started && assignment.status === 'opened'"
               >Start</a
             >
             <RouterLink

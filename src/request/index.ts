@@ -24,47 +24,40 @@ service.interceptors.request.use((config) => {
   return config
 })
 
-service.interceptors.response.use(
-  (response) => {
-    return Promise.resolve(response.data)
-  },
-  (error) => {
-    const status = error?.response?.status
-    if (status === undefined) {
-      return Promise.reject(null)
-    }
-    if (status === 404) {
-      return Promise.resolve('12345')
-    }
-    // console.error('Request failed', error, status)
-    if (status === 401) {
-      const store = useLocalStore()
-      if (!store.username || !store.password) {
-        router.push({ name: 'login' })
-        return Promise.reject(error.response.data)
-      }
-      if (error.response.config.url === '/auth/login?background') {
-        return Promise.reject(error.response.data)
-      }
-      return login(store.username, store.password, true).then((success) => {
-        if (success) {
-          return service
-            .request(error.response.config)
-            .catch(() => Promise.reject(error.response.data))
-        }
-        return Promise.reject(error.response.data)
-      })
-      // if (store.token) {
-      //   store.token = undefined
-      //   alert('Please login again!')
-      //   router.push({ name: 'login' })
-      // } else {
-      //   router.push({ name: 'login' })
-      // }
-      // return Promise.resolve(error.response.data)
-    }
-    return Promise.reject(error.response.data)
+function handleError(error: any, status?: number) {
+  if (status === undefined) {
+    status = error?.response?.status
   }
-)
+  if (status === undefined) {
+    return Promise.reject(null)
+  }
+  // console.error('Request failed', error, status)
+  if (status === 401) {
+    const store = useLocalStore()
+    if (!store.username || !store.password) {
+      router.push({ name: 'login' })
+      return Promise.reject(error.response.data)
+    }
+    if (error.response.config.url === '/auth/login?background') {
+      return Promise.reject(error.response.data)
+    }
+    return login(store.username, store.password, true).then((success) => {
+      if (success) {
+        return service
+          .request(error.response.config)
+          .catch(() => Promise.reject(error.response.data))
+      }
+      return Promise.reject(error.response.data)
+    })
+  }
+  return Promise.reject(error.response.data)
+}
+
+service.interceptors.response.use((response) => {
+  if (response.data?.code !== undefined && response.data.code !== 200) {
+    return handleError({ response }, response.data.code)
+  }
+  return Promise.resolve(response.data)
+}, handleError)
 
 export default service
