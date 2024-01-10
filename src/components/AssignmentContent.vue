@@ -190,7 +190,10 @@ async function doSubmit() {
   if (confirm('Are you sure you want to submit this assignment?')) {
     submitting.value = true
     try {
-      await doSave()
+      if (!(await doSave())) {
+        submitting.value = false
+        return
+      }
       await submit(subjectId, assignmentId)
       notifyStore.notify('Submitted assignment')
     } catch (e) {
@@ -233,8 +236,9 @@ function setResponse(value: string, question: Record<string, any>) {
   dirty.value = true
   if (!autosaveTimer.value) {
     autosaveTimer.value = setTimeout(async () => {
-      await save()
-      notifyStore.notify('Autosaved responses')
+      if (await save()) {
+        notifyStore.notify('Autosaved responses')
+      }
     }, 60000)
   }
 }
