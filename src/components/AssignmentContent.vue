@@ -2,15 +2,7 @@
 import FloppyDisk from '@/components/icons/FloppyDisk.vue'
 import FolderUpload from '@/components/icons/FolderUpload.vue'
 import router from '@/router'
-import {
-  getAnswers,
-  getAssignment,
-  getReport,
-  getResponses,
-  getTimed,
-  setResponses,
-  submit
-} from '@/service'
+import { getAnswers, getAssignment, getResponses, getTimed, setResponses, submit } from '@/service'
 import { useLocalStore, useNotificationStore } from '@/stores'
 import { formatDuration } from '@/utils/time'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
@@ -95,7 +87,7 @@ const assignmentId = props.assignmentId
 const isReview = props.review
 
 const assignment = ref<Record<string, any>>()
-const report = ref<Record<string, any>>()
+// const report = ref<Record<string, any>>()
 const answers = ref<Record<string, any>>()
 const responses = ref({} as Record<string, any>)
 const responsesLoaded = ref(false)
@@ -328,7 +320,7 @@ onMounted(async () => {
   try {
     assignment.value = await getAssignment(subjectId, assignmentId, isReview)
     if (isReview) {
-      report.value = await getReport(subjectId, assignmentId)
+      // report.value = await getReport(subjectId, assignmentId)
       answers.value = await getAnswers(subjectId, assignmentId)
     } else {
       await updateTimed()
