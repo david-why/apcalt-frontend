@@ -178,7 +178,6 @@ onMounted(async () => {
   <template v-else>
     <!-- <textarea v-text="rubric"></textarea>
     <textarea v-text="responses"></textarea> -->
-    <button @click="doSubmit">submit</button>
     <div class="item" v-for="item in rubric.items" :key="item.reference" ref="itemsEl">
       <div v-for="question in item.questions" :key="question.responseId">
         <h2>{{ findQuestion(item.reference) }} - {{ question.title }}</h2>
