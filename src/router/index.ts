@@ -5,6 +5,7 @@ import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import OutlineView from '@/views/OutlineView.vue'
 import ReviewView from '@/views/ReviewView.vue'
+import ScoringView from '@/views/ScoringView.vue'
 import SubjectAssignmentsView from '@/views/SubjectAssignmentsView.vue'
 import SubjectsView from '@/views/SubjectsView.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
@@ -56,6 +57,11 @@ const router = createRouter({
       path: '/subjects/:subjectId/assignments/:id/review',
       name: 'review',
       component: ReviewView
+    },
+    {
+      path: '/subjects/:subjectId/assignments/:id/scoring',
+      name: 'scoring',
+      component: ScoringView
     }
   ]
 })

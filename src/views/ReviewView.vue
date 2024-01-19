@@ -11,6 +11,6 @@ const assignmentId = route.params.id as string
   <AssignmentContent
     :subject-id="subjectId"
     :assignment-id="assignmentId"
-    review
+    :mode="1"
   ></AssignmentContent>
 </template>

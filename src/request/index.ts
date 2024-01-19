@@ -5,7 +5,8 @@ import { login } from '@/service'
 
 const service = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
-  timeout: 30000
+  timeout: 30000,
+  withCredentials: true
 })
 
 service.interceptors.request.use((config) => {

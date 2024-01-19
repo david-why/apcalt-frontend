@@ -165,6 +165,14 @@ defineExpose({ sortedAssignments, actions })
               }"
               >Review</RouterLink
             >
+            <RouterLink
+              v-if="assignment.progress.ready_to_score || assignment.progress.scoring"
+              :to="{
+                name: 'scoring',
+                params: { subjectId: assignment.subject.id, id: assignment.id }
+              }"
+              >Score</RouterLink
+            >
           </template>
           <template v-else-if="assignment.type === 'video'"></template>
         </td>

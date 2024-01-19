@@ -79,12 +79,16 @@ function getPlugin(responseId: string) {
 const props = defineProps({
   subjectId: { type: String, required: true },
   assignmentId: { type: String, required: true },
-  review: { type: Boolean, default: false }
+  hideTitle: { type: Boolean, default: false },
+  mode: { type: Number, default: 0 }
 })
 
 const subjectId = props.subjectId
 const assignmentId = props.assignmentId
-const isReview = props.review
+const mode = props.mode
+const isNormal = props.mode === 0
+const isReview = props.mode === 1
+const isScoring = props.mode === 2
 
 const assignment = ref<Record<string, any>>()
 // const report = ref<Record<string, any>>()
@@ -199,7 +203,7 @@ async function doSubmit() {
 }
 
 function setResponse(value: string, question: Record<string, any>) {
-  if (isReview) {
+  if (!isNormal) {
     return
   }
   const responseId: string = question.responseId
@@ -252,7 +256,7 @@ function onKeyDown(event: KeyboardEvent) {
     event.key === 'e'
   ) {
     choiceCommand(lastJump.value + ' ' + event.key)
-  } else if (!isReview && event.key === 'v') {
+  } else if (isNormal && event.key === 'v') {
     if (!event.repeat) {
       doSave()
     }
@@ -287,7 +291,7 @@ function choiceCommand(args: string) {
   if (question.type === 'mcq') {
     const choice = parts[1].toLowerCase().charCodeAt(0) - 'a'.charCodeAt(0)
     const cid = question.options[choice].value
-    if (isReview) {
+    if (!isNormal) {
       const details = itemsEl.value[idx]
         .querySelectorAll('div.question')
         [qidx].querySelectorAll('li.option')
@@ -318,41 +322,45 @@ function prevCommand() {
 onMounted(async () => {
   window.addEventListener('beforeunload', beforeUnload)
   try {
-    assignment.value = await getAssignment(subjectId, assignmentId, isReview)
+    assignment.value = await getAssignment(subjectId, assignmentId, mode)
     if (isReview) {
       // report.value = await getReport(subjectId, assignmentId)
       answers.value = await getAnswers(subjectId, assignmentId)
-    } else {
+    } else if (isNormal) {
       await updateTimed()
     }
-    responses.value = await getResponses(subjectId, assignmentId, isReview)
+    responses.value = await getResponses(subjectId, assignmentId, mode)
     responsesLoaded.value = true
   } catch (e) {
     console.error('Error loading assignment', e)
     router.push({ name: 'subjectAssignments', params: { id: subjectId } })
   }
-  store.addCommand('j', jumpCommand)
-  store.addCommand('n', nextCommand)
-  store.addCommand('p', prevCommand)
-  if (!isReview) {
+  if (!isScoring) {
+    store.addCommand('j', jumpCommand)
+    store.addCommand('n', nextCommand)
+    store.addCommand('p', prevCommand)
+    window.addEventListener('keydown', onKeyDown, true)
+  }
+  if (isNormal) {
     store.addCommand('x', choiceCommand)
     store.addCommand('v', doSave)
     store.addCommand('t', doSubmit)
   }
-  window.addEventListener('keydown', onKeyDown, true)
 })
 
 onUnmounted(() => {
-  store.removeCommand('j', jumpCommand)
-  store.removeCommand('n', nextCommand)
-  store.removeCommand('p', prevCommand)
-  if (!isReview) {
+  if (!isScoring) {
+    store.removeCommand('j', jumpCommand)
+    store.removeCommand('n', nextCommand)
+    store.removeCommand('p', prevCommand)
+    window.removeEventListener('keydown', onKeyDown, true)
+  }
+  if (isNormal) {
     store.removeCommand('x', choiceCommand)
     store.removeCommand('v', doSave)
     store.removeCommand('t', doSubmit)
   }
   window.removeEventListener('beforeunload', beforeUnload)
-  window.removeEventListener('keydown', onKeyDown, true)
   if (autosaveTimer.value) {
     clearTimeout(autosaveTimer.value)
   }
@@ -379,7 +387,7 @@ onBeforeRouteLeave(() => {
     <p v-else-if="!responsesLoaded">Loading your responses, please wait...</p>
     <p v-else-if="submitting">Submitting, please wait...</p>
     <template v-else>
-      <CenterContent>
+      <CenterContent v-if="!hideTitle">
         <h1 v-text="assignment.title"></h1>
       </CenterContent>
       <ol class="items">
@@ -420,12 +428,12 @@ onBeforeRouteLeave(() => {
                     :value="option.value"
                     @input="setResponse(option.value, question)"
                     :checked="(responses[question.responseId] || []).includes(option.value)"
-                    :disabled="review"
+                    :disabled="!isNormal"
                   />
                   <div class="apctext" v-html="option.label"></div>
                   <template
                     v-if="
-                      review &&
+                      !isNormal &&
                       (question.metadata.custom_distractor_rationale_response_level ||
                         question.metadata.distractor_rationale_response_level) &&
                       (question.metadata.custom_distractor_rationale_response_level ||
@@ -455,7 +463,7 @@ onBeforeRouteLeave(() => {
                 :editor="ClassicEditor"
                 :model-value="responses[question.responseId] || ''"
                 @input="setResponse($event, question)"
-                :disabled="review"
+                :disabled="!isNormal"
                 :config="{
                   //extraPlugins: [getPlugin(question.responseId)]
                 }"
@@ -479,7 +487,7 @@ onBeforeRouteLeave(() => {
       </ol>
     </template>
   </RestrainWidth>
-  <div class="float" v-if="!review">
+  <div class="float" v-if="isNormal">
     <span v-if="secondsLeft !== undefined" v-text="formatDuration(secondsLeft)"></span>
     <FloppyDisk class="button" :size="36" @click="doSave"></FloppyDisk>
     <FolderUpload class="button" :size="36" @click="doSubmit"></FolderUpload>

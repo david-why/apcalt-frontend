@@ -140,9 +140,9 @@ export async function startAssignment(subjectId: string, id: string) {
   await service.post(`/subjects/${subjectId}/assignments/${id}/start`)
 }
 
-export async function getAssignment(subjectId: string, id: string, review: boolean = false) {
-  return (await service.get(`/subjects/${subjectId}/assignments/${id}${review ? '/review' : ''}`))
-    .data
+export async function getAssignment(subjectId: string, id: string, mode: number = 0) {
+  const part = mode === 1 ? '/review' : mode === 2 ? '/scoring' : ''
+  return (await service.get(`/subjects/${subjectId}/assignments/${id}${part}`)).data
 }
 
 export async function getReport(subjectId: string, id: string) {
@@ -153,12 +153,9 @@ export async function getAnswers(subjectId: string, id: string) {
   return (await service.get(`/subjects/${subjectId}/assignments/${id}/review/answers`)).data
 }
 
-export async function getResponses(subjectId: string, id: string, review: boolean = false) {
-  return (
-    await service.get(
-      `/subjects/${subjectId}/assignments/${id}${review ? '/review' : ''}/responses`
-    )
-  ).data
+export async function getResponses(subjectId: string, id: string, mode: number = 0) {
+  const part = mode === 1 ? '/review' : mode === 2 ? '/scoring' : ''
+  return (await service.get(`/subjects/${subjectId}/assignments/${id}${part}/responses`)).data
 }
 
 export async function getTimed(subjectId: string, id: string) {
@@ -175,4 +172,33 @@ export async function setResponses(subjectId: string, id: string, responses: Rec
 
 export async function submit(subjectId: string, id: string) {
   await service.post(`/subjects/${subjectId}/assignments/${id}/submit`)
+}
+
+export async function getRubric(subjectId: string, id: string) {
+  return (await service.get(`/subjects/${subjectId}/assignments/${id}/scoring/rubric`)).data
+}
+
+export async function getCategories(subjectId: string, id: string) {
+  return (await service.get(`/subjects/${subjectId}/assignments/${id}/scoring/categories`)).data
+}
+
+export async function getRubricResponses(subjectId: string, id: string) {
+  return (await service.get(`/subjects/${subjectId}/assignments/${id}/scoring/rubric/responses`))
+    .data
+}
+
+export async function setRubricResponses(
+  subjectId: string,
+  id: string,
+  responses: Record<string, any>
+) {
+  const data = [] as { id: string; response: any }[]
+  for (const responseId in responses) {
+    data.push({ id: responseId, response: responses[responseId] })
+  }
+  await service.put(`/subjects/${subjectId}/assignments/${id}/scoring/rubric/responses`, data)
+}
+
+export async function submitScoring(subjectId: string, id: string) {
+  await service.post(`/subjects/${subjectId}/assignments/${id}/scoring/submit`)
 }
