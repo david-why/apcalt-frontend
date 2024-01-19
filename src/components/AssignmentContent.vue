@@ -433,7 +433,7 @@ onBeforeRouteLeave(() => {
                   <div class="apctext" v-html="option.label"></div>
                   <template
                     v-if="
-                      !isNormal &&
+                      isReview &&
                       (question.metadata.custom_distractor_rationale_response_level ||
                         question.metadata.distractor_rationale_response_level) &&
                       (question.metadata.custom_distractor_rationale_response_level ||
