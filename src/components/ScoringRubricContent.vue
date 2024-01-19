@@ -219,6 +219,7 @@ onMounted(async () => {
               <span v-html="criteria.description"></span>
             </li>
           </ul>
+          <div v-html="question.options[Number(responses[question.responseId].score)].additional_feedback"></div>
           <!-- <textarea rows="10" cols="40" v-text="responses[question.responseId]"></textarea> -->
         </template>
         <!-- <textarea rows="50" cols="50" v-text="item"></textarea> -->
