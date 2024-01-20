@@ -10,8 +10,7 @@ const assignmentId = route.params.id as string
 
 <template>
   <div class="scoring-view">
-    <div class="column">
-      <!-- <div class="assignment"> -->
+    <div class="column assignment">
       <AssignmentContent
         :subject-id="subjectId"
         :assignment-id="assignmentId"
@@ -20,32 +19,31 @@ const assignmentId = route.params.id as string
       ></AssignmentContent>
     </div>
     <div class="separator"></div>
-    <!-- </div> -->
-    <div class="column">
-      <!-- <div> -->
+    <div class="column rubric">
       <ScoringRubricContent
         :subject-id="subjectId"
         :assignment-id="assignmentId"
       ></ScoringRubricContent>
-      <!-- </div> -->
     </div>
   </div>
 </template>
 
 <style scoped>
 .scoring-view {
+  position: fixed;
+  top: 3rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
-  height: 100%;
 }
 .separator {
   flex: 0 0 10px;
 }
 .column {
   height: 100%;
+  overflow-y: scroll;
   flex: 1 0 0;
-}
-.assignment {
-  width: 100%;
-  height: 100%;
+  padding: 0.5em;
 }
 </style>
