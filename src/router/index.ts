@@ -8,6 +8,7 @@ import ReviewView from '@/views/ReviewView.vue'
 import ScoringView from '@/views/ScoringView.vue'
 import SubjectAssignmentsView from '@/views/SubjectAssignmentsView.vue'
 import SubjectsView from '@/views/SubjectsView.vue'
+import VideoView from '@/views/VideoView.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 const router = createRouter({
@@ -62,6 +63,11 @@ const router = createRouter({
       path: '/subjects/:subjectId/assignments/:id/scoring',
       name: 'scoring',
       component: ScoringView
+    },
+    {
+      path: '/subjects/:subjectId/videos/:videoId/:url',
+      name: 'video',
+      component: VideoView
     }
   ]
 })

@@ -20,6 +20,8 @@ export declare interface Assignment {
   score?: number
   max_score?: number
   filter_status: string
+  url?: string
+  video_id?: string
   item?: {
     id: number
     title: string

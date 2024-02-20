@@ -202,3 +202,7 @@ export async function setRubricResponses(
 export async function submitScoring(subjectId: string, id: string) {
   await service.post(`/subjects/${subjectId}/assignments/${id}/scoring/submit`)
 }
+
+export async function finishVideo(subjectId: string, url: string, videoId: string) {
+  await service.post(`/subjects/${subjectId}/videos/${url}:${videoId}/finish`)
+}

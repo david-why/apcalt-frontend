@@ -6,6 +6,8 @@ import type { Assignment, SubjectAssignment } from '@/types'
 import { getProgress } from '@/utils/assignment'
 import { formatDate } from '@/utils/time'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import OverlayComponent from './layout/OverlayComponent.vue'
+import WistiaComponent from './WistiaComponent.vue'
 const store = useLocalStore()
 
 const props = defineProps({
@@ -132,7 +134,9 @@ defineExpose({ sortedAssignments, actions })
         <td ref="actions">
           <template
             v-if="
-              (assignment.type === 'teacher-authored' || assignment.type === 'ppc') &&
+              (assignment.type === 'teacher-authored' ||
+                assignment.type === 'ppc' ||
+                assignment.type === 'practice-exam') &&
               assignment.progress
             "
           >
@@ -174,7 +178,18 @@ defineExpose({ sortedAssignments, actions })
               >Score</RouterLink
             >
           </template>
-          <template v-else-if="assignment.type === 'video'"></template>
+          <template v-else-if="assignment.type === 'video' && assignment.url">
+            <RouterLink
+              :to="{
+                name: 'video',
+                params: {
+                  subjectId: assignment.subject.id,
+                  videoId: assignment.video_id,
+                  url: assignment.url
+                }
+              }"
+            >Watch</RouterLink>
+          </template>
         </td>
       </tr>
     </table>
