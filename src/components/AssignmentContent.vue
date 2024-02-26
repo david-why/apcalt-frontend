@@ -4,6 +4,7 @@ import FolderUpload from '@/components/icons/FolderUpload.vue'
 import router from '@/router'
 import { getAnswers, getAssignment, getResponses, getTimed, setResponses, submit } from '@/service'
 import { useLocalStore, useNotificationStore } from '@/stores'
+import { typeset } from '@/utils/mathjax'
 import { formatDuration } from '@/utils/time'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
@@ -346,6 +347,7 @@ onMounted(async () => {
     store.addCommand('v', doSave)
     store.addCommand('t', doSubmit)
   }
+  setTimeout(typeset, 100)
 })
 
 onUnmounted(() => {
