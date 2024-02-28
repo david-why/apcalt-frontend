@@ -136,7 +136,8 @@ defineExpose({ sortedAssignments, actions })
             v-if="
               (assignment.type === 'teacher-authored' ||
                 assignment.type === 'ppc' ||
-                assignment.type === 'practice-exam') &&
+                assignment.type === 'practice-exam' ||
+                assignment.type === 'spp') &&
               assignment.progress
             "
           >
@@ -188,7 +189,8 @@ defineExpose({ sortedAssignments, actions })
                   url: assignment.url
                 }
               }"
-            >Watch</RouterLink>
+              >Watch</RouterLink
+            >
           </template>
         </td>
       </tr>
