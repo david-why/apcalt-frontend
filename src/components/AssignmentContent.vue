@@ -257,6 +257,8 @@ function onKeyDown(event: KeyboardEvent) {
     event.key === 'e'
   ) {
     choiceCommand(lastJump.value + ' ' + event.key)
+  } else if (isReview && event.key === 't') {
+    openAllDetails()
   } else if (isNormal && event.key === 'v') {
     if (!event.repeat) {
       doSave()
@@ -317,6 +319,20 @@ function prevCommand() {
   const jump = lastJump.value - 1
   if (jump >= 1) {
     jumpCommand('' + jump)
+  }
+}
+
+function openAllDetails() {
+  for (const item of itemsEl.value) {
+    for (const question of item.querySelectorAll('div.question')) {
+      const options = question.querySelectorAll('li.option.correct')
+      for (const option of options) {
+        const details = option.querySelector('details')
+        if (details !== null) {
+          details.open = true
+        }
+      }
+    }
   }
 }
 
