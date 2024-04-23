@@ -27,15 +27,9 @@ async function onLogin() {
 <template>
   <CenterContent>
     <h1>Login</h1>
-    <!-- <blockquote>
-      <b>Notice</b>: Your username and password is NOT stored on the APCAlt server in any way. It
-      WILL, however, be sent to the APCAlt server temporarily to log you in. <br />
-      <b>HOWEVER</b>, if you are using the standalone version (the .jar file on your own computer),
-      your username and password aren't sent ANYWHERE else!
-    </blockquote> -->
     <blockquote>
-      If you are using the standalone version of APCAlt (the .jar file running on your own
-      computer), your username/password WILL NOT be sent anywhere except the AP Classroom servers.
+      If you are using the standalone version of APCAlt (the app downloaded on your own computer),
+      your username/password WILL NOT be sent anywhere except the AP Classroom servers.
       <br />
       However, if you are using the public website, your username and password WILL temporarily be
       sent to the APCAlt servers to log you in. This information is not stored in any way on these
