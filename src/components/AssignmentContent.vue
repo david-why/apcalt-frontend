@@ -435,9 +435,13 @@ onBeforeRouteLeave(() => {
                   class="option"
                   v-for="(option, optindex) in question.options"
                   :key="option.value"
-                  :class="
-                    answers && answers[question.responseId].includes(option.value) ? 'correct' : ''
-                  "
+                  :class="{
+                    correct: answers && answers[question.responseId].includes(option.value),
+                    incorrect:
+                      answers &&
+                      !answers[question.responseId].includes(option.value) &&
+                      (responses[question.responseId] || []).includes(option.value)
+                  }"
                 >
                   <input
                     class="option-input"
@@ -553,6 +557,10 @@ onBeforeRouteLeave(() => {
 
 .correct {
   color: green;
+}
+
+.incorrect {
+  color: red;
 }
 
 .curjump {
